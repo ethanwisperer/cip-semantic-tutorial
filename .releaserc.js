@@ -33,7 +33,7 @@ module.exports = {
             const raw = { ...commit };
             
             // --- CONFIGURATION ---
-            const jiraBaseUrl = "https://your-domain.atlassian.net/browse/CIP-"; 
+            const jiraBaseUrl = "https://wisperai-team.atlassian.net/browse/CIP-"; 
             // ---------------------
 
             if (!['feat', 'fix', 'perf'].includes(raw.type)) {
