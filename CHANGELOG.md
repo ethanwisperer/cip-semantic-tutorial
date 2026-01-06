@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.0.0...v1.0.1) (2026-01-06)
+
+### Bug Fixes
+
+* some fixes were added ([d0f3258](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/d0f3258ee1d01e76139c70bc4fedbc55275dd8f5))
+
 ## 1.0.0 (2026-01-06)
 
 ### Features
