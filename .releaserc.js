@@ -12,8 +12,7 @@ module.exports = {
           headerCorrespondence: ["ticket", "type", "breaking", "scope", "subject"]
         },
         releaseRules: [
-          { breaking: true, release: 'major' },
-          { type: "feat", release: "minor" },
+          { type: "feat",breaking:true, release: "minor" },
           { type: "fix", release: "patch" },
           { type: "perf", release: "patch" }
         ]
@@ -26,33 +25,6 @@ module.exports = {
         parserOpts: {
           headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(!)?(?:\((.*)\))?: (.*)$/,
           headerCorrespondence: ["ticket", "type", "breaking", "scope", "subject"]
-        },
-        writerOpts: {
-          transform: (commit) => {
-            const newCommit = { ...commit };
-            if (newCommit.ticket) {
-              newCommit.subject = `CIP-${newCommit.ticket}: ${newCommit.subject}`;
-            }
-            newCommit.scope = undefined;
-            newCommit.references = [];
-
-            const typeMap = {
-              feat: "Features",
-              fix: "Bug Fixes",
-              perf: "Performance Improvements",
-              docs: "Documentation",
-              chore: "Maintenance"
-            };
-
-            // If it's a breaking change, label it clearly
-            if (newCommit.breaking) {
-                newCommit.type = "BREAKING CHANGES 🚨";
-            } else {
-                newCommit.type = typeMap[newCommit.type] || newCommit.type;
-            }
-
-            return newCommit;
-          }
         }
       }
     ],
