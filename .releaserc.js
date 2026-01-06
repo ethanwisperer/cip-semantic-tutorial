@@ -32,12 +32,17 @@ module.exports = {
         },
         writerOpts: {
           transform: (commit) => {
-            // 1. Create a shallow copy so we don't try to modify the original "locked" object
             const newCommit = { ...commit };
         
-            // 2. Modify our new copy instead of the original
+            // 1. Prepend Ticket to Subject
             if (newCommit.ticket) {
               newCommit.subject = `CIP-${newCommit.ticket}: ${newCommit.subject}`;
+            }
+        
+            // 2. SCOPE CLEANER: Remove empty parentheses
+            // If scope is empty or doesn't exist, set it to false so the template ignores it
+            if (!newCommit.scope || newCommit.scope === "") {
+              newCommit.scope = false; 
             }
         
             const typeMap = {
@@ -50,7 +55,6 @@ module.exports = {
         
             newCommit.type = typeMap[newCommit.type] || newCommit.type;
         
-            // 3. Return the modified copy
             return newCommit;
           }
         }
