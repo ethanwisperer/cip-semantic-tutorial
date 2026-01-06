@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.3.0...v1.4.0) (2026-01-06)
+
+### Features
+
+* CIP-103: add formatting for scope if not present ([](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/e3ec17eb8484c5c8fac4acc0e97caca9d9d3f0d0))
+
 ## [1.3.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.2.0...v1.3.0) (2026-01-06)
 
 ### Features
