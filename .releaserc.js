@@ -39,10 +39,10 @@ module.exports = {
               newCommit.subject = `CIP-${newCommit.ticket}: ${newCommit.subject}`;
             }
         
-            // 2. SCOPE CLEANER: Remove empty parentheses
-            // If scope is empty or doesn't exist, set it to false so the template ignores it
-            if (!newCommit.scope || newCommit.scope === "") {
-              newCommit.scope = false; 
+            // 2. STUBBORN SCOPE CLEANER
+            // We set it to null and delete it to ensure the template ignores the parentheses
+            if (!newCommit.scope || newCommit.scope.trim() === "") {
+              delete newCommit.scope;
             }
         
             const typeMap = {
@@ -54,6 +54,10 @@ module.exports = {
             };
         
             newCommit.type = typeMap[newCommit.type] || newCommit.type;
+            
+            // 3. Remove the redundant "closes" footer from the bottom of the notes
+            // if you don't want the "closes CIP-XXX" text at the end.
+            newCommit.references = []; 
         
             return newCommit;
           }
