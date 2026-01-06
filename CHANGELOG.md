@@ -1,3 +1,15 @@
+## [2.0.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.8.0...v2.0.0) (2026-01-06)
+
+### ⚠ BREAKING CHANGES
+
+* This release contains breaking changes declared in the commit header.
+* This release contains breaking changes declared in the commit header.
+
+### Features
+
+* [CIP-113](https://your-domain.atlassian.net/browse/CIP-113) feat: breaking change ([](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/ac1ee33ca1d2952db029d7e383ef20adef082234))
+* [CIP-114](https://your-domain.atlassian.net/browse/CIP-114) feat: add changes ([](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/6c296baf59c48d7770b10235f84726373baa6771))
+
 ## [1.8.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.7.0...v1.8.0) (2026-01-06)
 
 ### Features
