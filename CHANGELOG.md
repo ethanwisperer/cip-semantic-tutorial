@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v2.0.0...v2.0.1) (2026-01-06)
+
+### Bug Fixes
+
+* [CIP-112](https://wisperai-team.atlassian.net/browse/CIP-112) fix: added change ([](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/6d8e2fe6a37a2ebffe7f067f0c3a787fcc427de8))
+
 ## [2.0.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.8.0...v2.0.0) (2026-01-06)
 
 ### ⚠ BREAKING CHANGES
