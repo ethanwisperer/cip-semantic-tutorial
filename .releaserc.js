@@ -29,10 +29,10 @@ module.exports = {
         },
         writerOpts: {
           transform: (commit, context) => {
+            // 1. Shallow clone the main object
             const raw = { ...commit };
-
+            
             // --- CONFIGURATION ---
-            // 1. Set your Jira URL here (don't forget the trailing slash if needed)
             const jiraBaseUrl = "https://your-domain.atlassian.net/browse/CIP-"; 
             // ---------------------
 
@@ -40,7 +40,7 @@ module.exports = {
               return null;
             }
 
-            // 2. Fix the "()" issue by ensuring empty scope is NULL, not empty string
+            // 2. Fix the "()" issue
             if (!raw.scope || raw.scope === "") {
               raw.scope = null;
             }
@@ -51,8 +51,6 @@ module.exports = {
             if (raw.ticket) {
               const ticketId = `CIP-${raw.ticket}`;
               const ticketLink = `[${ticketId}](${jiraBaseUrl}${raw.ticket})`;
-              
-              // Result: "[CIP-119](url) feat: message"
               raw.subject = `${ticketLink} ${originalType}: ${raw.subject}`;
             }
 
@@ -67,9 +65,12 @@ module.exports = {
               return null;
             }
 
-            // 5. Breaking Changes Header
+            // 5. Breaking Changes Header (THE FIX IS HERE)
             if (raw.isBreaking === '!') {
-               raw.notes = raw.notes || [];
+               // ⚠️ CRITICAL: Create a NEW array using [...spread] syntax
+               // If we don't do this, we are pushing to a frozen array -> Error
+               raw.notes = raw.notes ? [...raw.notes] : [];
+               
                const hasBreakingNote = raw.notes.some(n => n.title === 'BREAKING CHANGES');
                if (!hasBreakingNote) {
                  raw.notes.push({
