@@ -34,16 +34,14 @@ module.exports = {
           transform: (commit) => {
             const newCommit = { ...commit };
         
-            // 1. Prepend Ticket to Subject
+            // 1. Prepend Ticket to Subject manually
             if (newCommit.ticket) {
               newCommit.subject = `CIP-${newCommit.ticket}: ${newCommit.subject}`;
             }
         
-            // 2. STUBBORN SCOPE CLEANER
-            // We set it to null and delete it to ensure the template ignores the parentheses
-            if (!newCommit.scope || newCommit.scope.trim() === "") {
-              delete newCommit.scope;
-            }
+            // 2. Clear out everything that triggers () or footers
+            newCommit.scope = undefined;
+            newCommit.references = [];
         
             const typeMap = {
               feat: "Features",
@@ -54,10 +52,6 @@ module.exports = {
             };
         
             newCommit.type = typeMap[newCommit.type] || newCommit.type;
-            
-            // 3. Remove the redundant "closes" footer from the bottom of the notes
-            // if you don't want the "closes CIP-XXX" text at the end.
-            newCommit.references = []; 
         
             return newCommit;
           }
