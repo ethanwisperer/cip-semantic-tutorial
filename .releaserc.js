@@ -32,11 +32,14 @@ module.exports = {
         },
         writerOpts: {
           transform: (commit) => {
-            // This logic only works in a .js file!
-            if (commit.ticket) {
-              commit.subject = `CIP-${commit.ticket}: ${commit.subject}`;
+            // 1. Create a shallow copy so we don't try to modify the original "locked" object
+            const newCommit = { ...commit };
+        
+            // 2. Modify our new copy instead of the original
+            if (newCommit.ticket) {
+              newCommit.subject = `CIP-${newCommit.ticket}: ${newCommit.subject}`;
             }
-
+        
             const typeMap = {
               feat: "Features",
               fix: "Bug Fixes",
@@ -44,9 +47,11 @@ module.exports = {
               docs: "Documentation",
               chore: "Maintenance"
             };
-
-            commit.type = typeMap[commit.type] || commit.type;
-            return commit;
+        
+            newCommit.type = typeMap[newCommit.type] || newCommit.type;
+        
+            // 3. Return the modified copy
+            return newCommit;
           }
         }
       }
