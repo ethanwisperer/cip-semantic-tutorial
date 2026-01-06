@@ -8,7 +8,6 @@ module.exports = {
         preset: "conventionalcommits",
         parserOpts: {
           headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(!)?(?:\((.*)\))?: (.*)$/,
-          // We use 'isBreaking' to track the "!" separately
           headerCorrespondence: ["ticket", "type", "isBreaking", "scope", "subject"]
         },
         releaseRules: [
@@ -29,46 +28,49 @@ module.exports = {
         },
         writerOpts: {
           transform: (commit, context) => {
-            // 1. Shallow clone the main object
-            const raw = { ...commit };
-            
-            // --- CONFIGURATION ---
-            const jiraBaseUrl = "https://wisperai-team.atlassian.net/browse/CIP-"; 
-            // ---------------------
+            // 1. Clone to avoid Immutable Error
+            let raw = { ...commit };
 
+            const jiraBaseUrl = "https://wisperai-team.atlassian.net/browse/CIP-";
+
+            // 2. Filter Types
             if (!['feat', 'fix', 'perf'].includes(raw.type)) {
               return null;
             }
 
-            // 2. Fix the "()" issue
-            if (!raw.scope || raw.scope === "") {
-              raw.scope = null;
+            // 3. CLEANUP:
+            // Remove scope to prevent empty () from scope
+            raw.scope = null;
+            
+            // ⚠️ ENABLE HASH:
+            // Ensure we use the short version (7 chars) for the display text
+            if (typeof raw.hash === 'string') {
+              raw.shortHash = raw.hash.substring(0, 7);
+            }
+            if (raw.shortHash) {
+              raw.hash = raw.shortHash;
             }
 
+            // 4. Format Subject with Jira Link
             const originalType = raw.type;
-
-            // 3. Create the Clickable Jira Link
             if (raw.ticket) {
               const ticketId = `CIP-${raw.ticket}`;
               const ticketLink = `[${ticketId}](${jiraBaseUrl}${raw.ticket})`;
+              
               raw.subject = `${ticketLink} ${originalType}: ${raw.subject}`;
             }
 
-            // 4. Map Types
+            // 5. Section Headers
             if (raw.type === 'feat') {
               raw.type = 'Features';
             } else if (raw.type === 'fix') {
               raw.type = 'Bug Fixes';
             } else if (raw.type === 'perf') {
               raw.type = 'Performance Improvements';
-            } else {
-              return null;
             }
 
-            // 5. Breaking Changes Header (THE FIX IS HERE)
+            // 6. Breaking Changes (Immutable Fix)
             if (raw.isBreaking === '!') {
-               // ⚠️ CRITICAL: Create a NEW array using [...spread] syntax
-               // If we don't do this, we are pushing to a frozen array -> Error
                raw.notes = raw.notes ? [...raw.notes] : [];
                
                const hasBreakingNote = raw.notes.some(n => n.title === 'BREAKING CHANGES');
