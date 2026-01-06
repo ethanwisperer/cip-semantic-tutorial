@@ -8,13 +8,11 @@ module.exports = {
         preset: "conventionalcommits",
         parserOpts: {
           headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(!)?(?:\((.*)\))?: (.*)$/,
-          headerCorrespondence: ["ticket", "type", "breaking", "scope", "subject"]
+          // We use 'isBreaking' to track the "!" separately
+          headerCorrespondence: ["ticket", "type", "isBreaking", "scope", "subject"]
         },
         releaseRules: [
-          // ⚠️ FIX: Match the string "!" (captured from regex) instead of boolean true
-          { type: "feat", breaking: "!", release: "major" },
-          
-          // Fallbacks for non-breaking commits
+          { isBreaking: "!", release: "major" },
           { type: "feat", release: "minor" },
           { type: "fix", release: "patch" },
           { type: "perf", release: "patch" }
@@ -27,26 +25,38 @@ module.exports = {
         preset: "conventionalcommits",
         parserOpts: {
           headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(!)?(?:\((.*)\))?: (.*)$/,
-          headerCorrespondence: ["ticket", "type", "breaking", "scope", "subject"]
+          headerCorrespondence: ["ticket", "type", "isBreaking", "scope", "subject"]
         },
         writerOpts: {
           transform: (commit, context) => {
-            // 1. Clone to fix "immutable object" error
             const raw = { ...commit };
-            
-            // 2. Filter types
+
+            // --- CONFIGURATION ---
+            // 1. Set your Jira URL here (don't forget the trailing slash if needed)
+            const jiraBaseUrl = "https://your-domain.atlassian.net/browse/CIP-"; 
+            // ---------------------
+
             if (!['feat', 'fix', 'perf'].includes(raw.type)) {
               return null;
             }
 
-            // 3. Format Subject: "CIP-112 feat: message"
-            const originalType = raw.type;
-            if (raw.ticket) {
-              const ticketPrefix = `CIP-${raw.ticket} ${originalType}:`;
-              raw.subject = `${ticketPrefix} ${raw.subject}`;
+            // 2. Fix the "()" issue by ensuring empty scope is NULL, not empty string
+            if (!raw.scope || raw.scope === "") {
+              raw.scope = null;
             }
 
-            // 4. Map Types to Headers
+            const originalType = raw.type;
+
+            // 3. Create the Clickable Jira Link
+            if (raw.ticket) {
+              const ticketId = `CIP-${raw.ticket}`;
+              const ticketLink = `[${ticketId}](${jiraBaseUrl}${raw.ticket})`;
+              
+              // Result: "[CIP-119](url) feat: message"
+              raw.subject = `${ticketLink} ${originalType}: ${raw.subject}`;
+            }
+
+            // 4. Map Types
             if (raw.type === 'feat') {
               raw.type = 'Features';
             } else if (raw.type === 'fix') {
@@ -57,9 +67,16 @@ module.exports = {
               return null;
             }
 
-            // 5. Preserve breaking notes
-            if (raw.notes && raw.notes.length > 0) {
-               raw.notes = raw.notes.map(note => ({ ...note, title: 'BREAKING CHANGES' }));
+            // 5. Breaking Changes Header
+            if (raw.isBreaking === '!') {
+               raw.notes = raw.notes || [];
+               const hasBreakingNote = raw.notes.some(n => n.title === 'BREAKING CHANGES');
+               if (!hasBreakingNote) {
+                 raw.notes.push({
+                   title: 'BREAKING CHANGES',
+                   text: 'This release contains breaking changes declared in the commit header.'
+                 });
+               }
             }
 
             return raw;
