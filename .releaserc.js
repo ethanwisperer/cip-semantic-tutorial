@@ -7,9 +7,9 @@ module.exports = {
       {
         preset: "conventionalcommits",
         parserOpts: {
-          // Note: In JS files, we use actual Regex / / instead of strings
-          headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(?:\((.*)\))?: (.*)$/,
-          headerCorrespondence: ["ticket", "type", "scope", "subject"]
+          // Added (!) and "breaking" correspondence
+          headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(!)?(?:\((.*)\))?: (.*)$/,
+          headerCorrespondence: ["ticket", "type", "breaking", "scope", "subject"]
         },
         releaseRules: [
           { breaking: true, release: 'major' },
@@ -23,27 +23,19 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         preset: "conventionalcommits",
-        presetConfig: {
-          issuePrefixes: ["CIP-"],
-          issueUrlFormat: "https://wisperai-team.atlassian.net/browse/{{prefix}}{{id}}"
-        },
         parserOpts: {
-          headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(?:\((.*)\))?: (.*)$/,
-          headerCorrespondence: ["ticket", "type", "scope", "subject"]
+          headerPattern: /^CIP-(\d+)\s+(feat|fix|perf|docs|chore|style|refactor)(!)?(?:\((.*)\))?: (.*)$/,
+          headerCorrespondence: ["ticket", "type", "breaking", "scope", "subject"]
         },
         writerOpts: {
           transform: (commit) => {
             const newCommit = { ...commit };
-        
-            // 1. Prepend Ticket to Subject manually
             if (newCommit.ticket) {
               newCommit.subject = `CIP-${newCommit.ticket}: ${newCommit.subject}`;
             }
-        
-            // 2. Clear out everything that triggers () or footers
             newCommit.scope = undefined;
             newCommit.references = [];
-        
+
             const typeMap = {
               feat: "Features",
               fix: "Bug Fixes",
@@ -51,9 +43,14 @@ module.exports = {
               docs: "Documentation",
               chore: "Maintenance"
             };
-        
-            newCommit.type = typeMap[newCommit.type] || newCommit.type;
-        
+
+            // If it's a breaking change, label it clearly
+            if (newCommit.breaking) {
+                newCommit.type = "BREAKING CHANGES 🚨";
+            } else {
+                newCommit.type = typeMap[newCommit.type] || newCommit.type;
+            }
+
             return newCommit;
           }
         }
