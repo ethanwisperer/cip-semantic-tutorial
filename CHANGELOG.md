@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.2.0...v1.3.0) (2026-01-06)
+
+### Features
+
+* CIP-102: add changes for formatting ([](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/2c1bb0e1938ed353c9af5e318cbea0ec75139663)), closes [CIP-102](https://wisperai-team.atlassian.net/browse/CIP-102)
+
 ## [1.2.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.1.0...v1.2.0) (2026-01-06)
 
 * CIP-104 feat!: changed logic ([](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/0eacb6f4d1c29934f4eee1e086655704c84f2f6f)), closes [CIP-104](https://wisperai-team.atlassian.net/browse/CIP-104)
