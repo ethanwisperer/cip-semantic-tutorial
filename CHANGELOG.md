@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.5.0...v1.6.0) (2026-01-06)
+
+### Features
+
+* breaking change ([c251578](https://github.com/ethanwisperer/cip-semantic-tutorial/commit/c251578de0c110351903e5e878b1cd595c45cf2f))
+
 ## [1.5.0](https://github.com/ethanwisperer/cip-semantic-tutorial/compare/v1.4.0...v1.5.0) (2026-01-06)
 
 ### BREAKING CHANGES 🚨
