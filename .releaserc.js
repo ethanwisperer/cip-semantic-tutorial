@@ -12,6 +12,7 @@ module.exports = {
           headerCorrespondence: ["ticket", "type", "scope", "subject"]
         },
         releaseRules: [
+          { breaking: true, release: 'major' },
           { type: "feat", release: "minor" },
           { type: "fix", release: "patch" },
           { type: "perf", release: "patch" }
