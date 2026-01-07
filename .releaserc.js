@@ -19,7 +19,7 @@ module.exports = {
       }
     ],
     ["@semantic-release/exec", {
-      "prepareCmd": "echo ${nextRelease.version}"
+      "successCmd": "echo '${nextRelease.version}' > .version"
     }],
     [
       "@semantic-release/release-notes-generator",

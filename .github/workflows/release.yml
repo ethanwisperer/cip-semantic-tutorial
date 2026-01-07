@@ -26,6 +26,26 @@ jobs:
         run: npm ci
 
       - name: Release
+        id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
+
+      - name: Get version
+        id: version
+        if: steps.release.outcome == 'success'
+        run: |
+          if [ -f .version ]; then
+            VERSION=$(cat .version)
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "Released version: $VERSION"
+          else
+            echo "No version file found - release may have been skipped"
+            exit 1
+          fi
+
+      - name: Use version in subsequent steps
+        if: steps.version.outputs.version != ''
+        run: |
+          echo "Version from release: ${{ steps.version.outputs.version }}"
+          # Add your additional steps here that use the version
